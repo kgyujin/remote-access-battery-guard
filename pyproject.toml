@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "remote-access-battery-guard"
+version = "0.1.0"
+description = "Keep remote-ready computers available while minimizing battery drain."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+  { name = "remote-access-battery-guard contributors" },
+]
+dependencies = []
+
+[project.scripts]
+rabg = "remote_access_battery_guard.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"

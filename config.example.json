@@ -1,0 +1,12 @@
+{
+  "poll_interval_seconds": 30,
+  "disable_guard_at_or_below_percent": 20,
+  "apply_on_ac_power": false,
+  "restore_on_exit": true,
+  "keep_awake": true,
+  "prevent_display_sleep": false,
+  "brightness_level": 0.0,
+  "volume_level": 0,
+  "brightness_fallback": "keys",
+  "state_file": null
+}
