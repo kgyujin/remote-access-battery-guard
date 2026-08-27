@@ -1,3 +1,4 @@
+from remote_access_battery_guard.config import load_config, save_config
 from remote_access_battery_guard.models import GuardConfig, PowerSource, PowerStatus
 
 
@@ -41,3 +42,28 @@ def test_unknown_fields_are_rejected() -> None:
         assert "unexpected" in str(error)
     else:
         raise AssertionError("Unknown configuration fields must be rejected")
+
+
+def test_menubar_enabled_defaults_to_true() -> None:
+    config = GuardConfig()
+
+    assert config.menubar_enabled is True
+
+
+def test_save_config_round_trips_menubar_enabled(tmp_path) -> None:
+    config_path = tmp_path / "config.json"
+    save_config(config_path, GuardConfig(menubar_enabled=False))
+
+    loaded = load_config(config_path)
+
+    assert loaded.menubar_enabled is False
+
+
+def test_save_config_overwrites_existing_file(tmp_path) -> None:
+    config_path = tmp_path / "config.json"
+    save_config(config_path, GuardConfig(disable_guard_at_or_below_percent=20))
+    save_config(config_path, GuardConfig(disable_guard_at_or_below_percent=15))
+
+    loaded = load_config(config_path)
+
+    assert loaded.disable_guard_at_or_below_percent == 15

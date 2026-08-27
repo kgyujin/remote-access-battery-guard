@@ -80,6 +80,9 @@ class GuardConfig:
     volume_level: int = 0
     brightness_fallback: str = "keys"
     state_file: str | None = None
+    # Persists the macOS menu bar app's master on/off toggle across restarts;
+    # the headless CLI (`rabg run`/`apply`) ignores this field.
+    menubar_enabled: bool = True
 
     def __post_init__(self) -> None:
         if self.poll_interval_seconds < 5:
@@ -108,6 +111,7 @@ class GuardConfig:
             "volume_level",
             "brightness_fallback",
             "state_file",
+            "menubar_enabled",
         }
         unknown_fields = sorted(set(payload) - known_fields)
         if unknown_fields:
@@ -128,6 +132,7 @@ class GuardConfig:
             "volume_level": self.volume_level,
             "brightness_fallback": self.brightness_fallback,
             "state_file": self.state_file,
+            "menubar_enabled": self.menubar_enabled,
         }
 
     def is_eligible(self, status: PowerStatus) -> tuple[bool, str]:

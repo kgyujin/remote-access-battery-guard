@@ -68,6 +68,10 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "uninstall-macos-service", help="Unload and remove the macOS launch agent"
     )
+    subparsers.add_parser(
+        "menubar",
+        help="Run the macOS menu bar app (requires: pip install -e '.[menubar]')",
+    )
     return parser
 
 
@@ -146,6 +150,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.command == "uninstall-macos-service":
             path = uninstall_macos_launch_agent()
             print(f"Removed: {path}")
+            return 0
+        if args.command == "menubar":
+            from .menubar import run_menubar_app
+
+            run_menubar_app(config_path)
             return 0
         controller = _controller(config_path)
         if args.command == "status":

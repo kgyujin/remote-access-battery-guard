@@ -85,11 +85,14 @@ The important safety setting is inclusive: `disable_guard_at_or_below_percent: 2
   "brightness_level": 0.0,
   "volume_level": 0,
   "brightness_fallback": "keys",
-  "state_file": null
+  "state_file": null,
+  "menubar_enabled": true
 }
 ```
 
 Use `prevent_display_sleep: true` only when the remote screen must remain visibly active. It uses more battery; the default keeps the system awake while allowing the display to sleep.
+
+`menubar_enabled` only affects the [menu bar app](#macos-menu-bar-app): it stores the on/off toggle's last state so it's restored the next time the app starts. The headless CLI ignores it.
 
 ### Start automatically on macOS
 
@@ -106,6 +109,24 @@ rabg uninstall-macos-service
 ```
 
 On Windows, create a Task Scheduler task that runs `python -m remote_access_battery_guard run` at user logon. Run it as the same user who owns the remote-access session; administrator privileges are not required for the normal guard.
+
+## macOS menu bar app
+
+A single on/off toggle for people who would rather not run a terminal command. Requires the optional [`rumps`](https://github.com/jaredks/rumps) dependency:
+
+```sh
+python -m pip install -e ".[menubar]"
+rabg menubar
+```
+
+The status bar shows the battery percentage next to a glyph (🔋 idle, 🛡️ guard currently applying, ⏻ off). Everything is one flat menu — no separate preferences window:
+
+- **Battery Guard Enabled** — the master switch. Turning it off restores the captured brightness/volume immediately, the same as `rabg restore`.
+- **Threshold submenu** — battery-percentage presets (10/15/20/25/30%) at or below which the guard stays inactive.
+- **Keep awake / Also keep display awake** — the same options as `keep_awake` / `prevent_display_sleep`.
+- **Start at login** — installs a separate login item for the menu bar app (independent of `install-macos-service`).
+
+Every change is written straight to the same `config.json` the CLI reads, so `rabg status` and the menu bar app always agree. Run only one of `rabg run` (the headless launch agent) or `rabg menubar` at a time — both apply the same guard against the same state file, so running both together is redundant.
 
 ## Remote-use checklist
 

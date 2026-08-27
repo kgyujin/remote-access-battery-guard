@@ -8,5 +8,6 @@
   "brightness_level": 0.0,
   "volume_level": 0,
   "brightness_fallback": "keys",
-  "state_file": null
+  "state_file": null,
+  "menubar_enabled": true
 }

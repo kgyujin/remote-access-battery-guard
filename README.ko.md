@@ -85,11 +85,14 @@ rabg status      # 사람이 읽기 쉬운 상태 출력
   "brightness_level": 0.0,
   "volume_level": 0,
   "brightness_fallback": "keys",
-  "state_file": null
+  "state_file": null,
+  "menubar_enabled": true
 }
 ```
 
 원격 화면이 실제로 계속 켜져 있어야 하는 경우에만 `prevent_display_sleep: true`를 사용하세요. 배터리를 더 사용하며, 기본값은 시스템을 깨어 있게 하되 화면 절전은 허용합니다.
+
+`menubar_enabled`는 [메뉴바 앱](#macos-메뉴바-앱)에만 영향을 줍니다. 온/오프 토글의 마지막 상태를 저장해 앱을 다시 실행할 때 그대로 복원합니다. 헤드리스 CLI는 이 값을 무시합니다.
 
 ### macOS 로그인 시 자동 실행
 
@@ -106,6 +109,24 @@ rabg uninstall-macos-service
 ```
 
 Windows에서는 작업 스케줄러에서 `python -m remote_access_battery_guard run`을 사용자 로그인 시 실행하도록 등록하세요. 원격 세션을 소유한 동일 사용자로 실행하면 되며, 일반적인 가드 동작에는 관리자 권한이 필요하지 않습니다.
+
+## macOS 메뉴바 앱
+
+터미널 명령을 직접 실행하고 싶지 않은 사람을 위한 단순한 온/오프 토글입니다. 선택적 의존성인 [`rumps`](https://github.com/jaredks/rumps)가 필요합니다.
+
+```sh
+python -m pip install -e ".[menubar]"
+rabg menubar
+```
+
+메뉴바에는 배터리 잔량과 상태 아이콘(🔋 대기, 🛡️ 가드 적용 중, ⏻ 꺼짐)이 함께 표시됩니다. 별도의 환경설정 창 없이 하나의 드롭다운 메뉴 안에서 모두 조정합니다.
+
+- **배터리 가드 켜짐** — 메인 온/오프 스위치. 끄면 즉시 저장된 밝기/음량을 복구합니다. `rabg restore`와 동일합니다.
+- **임계값 서브메뉴** — 가드를 비활성화할 배터리 % 프리셋(10/15/20/25/30%)입니다.
+- **항상 깨어있기 유지 / 디스플레이도 계속 켜두기** — `keep_awake` / `prevent_display_sleep`과 동일한 설정입니다.
+- **로그인 시 자동 실행** — 메뉴바 앱 전용 로그인 항목을 설치합니다(`install-macos-service`와는 별개).
+
+모든 변경사항은 CLI가 읽는 것과 동일한 `config.json`에 바로 저장되므로 `rabg status`와 메뉴바 앱의 설정이 항상 일치합니다. `rabg run`(헤드리스 launch agent)과 `rabg menubar`는 동일한 가드를 동일한 상태 파일에 적용하므로 둘을 동시에 실행할 필요는 없습니다.
 
 ## 원격 사용 전 확인
 

@@ -14,6 +14,10 @@ authors = [
 ]
 dependencies = []
 
+[project.optional-dependencies]
+# macOS menu bar app (`rabg menubar`); not needed for the headless CLI.
+menubar = ["rumps>=0.4.0"]
+
 [project.scripts]
 rabg = "remote_access_battery_guard.cli:main"
 

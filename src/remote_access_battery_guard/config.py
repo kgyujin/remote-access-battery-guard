@@ -62,14 +62,21 @@ def resolve_state_path(config: GuardConfig) -> Path:
     return default_state_path()
 
 
+def save_config(path: Path, config: GuardConfig) -> None:
+    """Persist a validated configuration, overwriting any existing file."""
+
+    config_path = path.expanduser()
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(
+        json.dumps(config.to_mapping(), indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
 def write_default_config(path: Path, *, overwrite: bool = False) -> None:
     """Create a readable starter config and refuse accidental overwrites."""
 
     config_path = path.expanduser()
     if config_path.exists() and not overwrite:
         raise FileExistsError(f"Configuration already exists: {config_path}")
-    config_path.parent.mkdir(parents=True, exist_ok=True)
-    config_path.write_text(
-        json.dumps(GuardConfig().to_mapping(), indent=2) + "\n",
-        encoding="utf-8",
-    )
+    save_config(config_path, GuardConfig())
